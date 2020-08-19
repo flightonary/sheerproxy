@@ -1,0 +1,39 @@
+version: '3'
+services:
+  squid:
+    container_name: sheerproxy-squid
+    image: sameersbn/squid
+    ports:
+      - 3128:3128
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+    networks:
+      - private
+
+  squid-basic:
+    container_name: sheerproxy-squid-basic
+    image: sameersbn/squid
+    ports:
+      - 3129:3129
+    volumes:
+      - ./squid-basic.conf:/etc/squid/squid.conf
+      - ./htpasswd:/etc/squid/.htpasswd
+    networks:
+      - private
+
+  centos:
+    build:
+      context: .
+      dockerfile: Dockerfile-centos
+    container_name: sheerproxy-centos
+    tty: true
+    volumes:
+      - ../:/app
+    links:
+      - squid
+    networks:
+      - private
+
+networks:
+  private:
+    driver: bridge

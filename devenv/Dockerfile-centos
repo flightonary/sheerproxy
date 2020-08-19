@@ -1,0 +1,7 @@
+FROM centos/devtoolset-7-toolchain-centos7
+
+USER 0
+RUN yum install -y iproute curl
+WORKDIR /app
+
+CMD ["/bin/bash"]
