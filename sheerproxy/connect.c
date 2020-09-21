@@ -118,6 +118,9 @@ int sp_connect(int sock, const struct sockaddr *sa, socklen_t salen) {
     sa_family_t family = SOCKFAMILY(sa);
     char* domain = NULL;
     char  port[PORT_BUF_SIZE] = {0};
+    
+    if (is_stream(sock) == false)
+        goto original_behavior;
 
     if (family == AF_INET) {
         domain = querybyaddr(&SOCKADDR(sa));
@@ -129,10 +132,6 @@ int sp_connect(int sock, const struct sockaddr *sa, socklen_t salen) {
     if(!domain)
         goto original_behavior;
 
-    
-    if (is_stream(sock) == false)
-        goto original_behavior;
-    
     proxy_info_t *proxy_info = select_proxy(family);
     if(!proxy_info){
         free(domain);
